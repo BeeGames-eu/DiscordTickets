@@ -147,7 +147,7 @@ module.exports.export = (Ticket, channel) => new Promise(async (resolve, reject)
 			headers: { 'Content-Type': 'application/json' },
 		})
 			.then(res => res.json())
-			.then(res => {
+			.then(async res => {
 				if (res.status !== 200) {
 					log.warn(res);
 					return resolve(new Error(`${res.status} (${res.message})`));

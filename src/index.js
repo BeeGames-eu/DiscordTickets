@@ -147,7 +147,7 @@ log.info(`Loaded ${events.length} events and ${commands.length} commands`);
 const one_day = 1000 * 60 * 60 * 24;
 const txt = '../user/transcripts/text';
 const clean = async () => {
-	const files = await readdir(join(__dirname, txt)).filter(file => file.endsWith('.txt'));
+	const files = (await readdir(join(__dirname, txt))).filter(file => file.endsWith('.txt'));
 	let total = 0;
 	for (const file of files) {
 		try {
