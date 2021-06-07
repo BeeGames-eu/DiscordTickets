@@ -9,7 +9,6 @@
 const Logger = require('leekslazylogger');
 const log = new Logger();
 const { MessageEmbed } = require('discord.js');
-const fs = require('fs');
 const { promises: { readdir }} = require("fs");
 const { join } = require('path');
 
