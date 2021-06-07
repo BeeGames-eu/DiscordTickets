@@ -8,7 +8,7 @@
 
 const Logger = require('leekslazylogger');
 const log = new Logger();
-const { promises: { append }} = require("fs");
+const { promises: { appendFile }} = require("fs");
 const { join } = require('path');
 
 module.exports = {
@@ -41,7 +41,7 @@ module.exports = {
 		let embeds = [];
 		for (let embed in n.embeds) embeds.push({ ...n.embeds[embed] });
 
-		await append(join(__dirname, path), JSON.stringify({
+		await appendFile(join(__dirname, path), JSON.stringify({
 			id: n.id,
 			author: n.author.id,
 			content: n.content, // do not use cleanContent!
