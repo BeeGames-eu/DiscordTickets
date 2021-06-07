@@ -9,14 +9,15 @@
 
 const Logger = require('leekslazylogger');
 const log = new Logger();
-const Readlines = require('n-readlines');
-const fs = require('fs');
+const { promises: { appendFile, access, writeFile, readFile, unlink }} = require("fs");
 const { join } = require('path');
 const dtf = require('@eartharoid/dtf');
 const config = require('../../user/' + require('../').config);
 const fetch = require('node-fetch');
 
-module.exports.add = (message) => {
+const exists = path => access(path).then(() => true, () => false);
+
+module.exports.add = async (message) => {
 
 	if (message.type !== 'DEFAULT') return;
 
@@ -26,18 +27,20 @@ module.exports.add = (message) => {
 			msg = message.cleanContent;
 		message.attachments.each(a => msg += '\n' + a.url);
 		let string = `[${time}] [${message.author.tag}] :> ${msg}`;
-		fs.appendFileSync(join(__dirname, path), string + '\n');
+
+		await appendFile(join(__dirname, path), string + '\n');
 	}
 
 	if (config.transcripts.web.enabled) { // web archives
 		let raw = `../../user/transcripts/raw/${message.channel.id}.log`,
 			json = `../../user/transcripts/raw/entities/${message.channel.id}.json`;
 
+		// TODO(TTtie): why are embeds copied?
 		let embeds = [];
 		for (let embed in message.embeds) embeds.push({ ...message.embeds[embed] });
 
 		// message
-		fs.appendFileSync(join(__dirname, raw), JSON.stringify({
+		await appendFile(join(__dirname, raw), JSON.stringify({
 			id: message.id,
 			author: message.author.id,
 			content: message.content, // do not use cleanContent, we want to include the mentions!
@@ -47,8 +50,8 @@ module.exports.add = (message) => {
 		}) + '\n');
 
 		// channel entities
-		if (!fs.existsSync(join(__dirname, json)))
-			fs.writeFileSync(join(__dirname, json), JSON.stringify({
+		if (!await exists(join(__dirname, json)))
+			await writeFile(join(__dirname, json), JSON.stringify({
 				entities: {
 					users: {},
 					channels: {},
@@ -56,7 +59,7 @@ module.exports.add = (message) => {
 				}
 			})); // create new
 
-		let data = JSON.parse(fs.readFileSync(join(__dirname, json)));
+		let data = JSON.parse(await readFile(join(__dirname, json)));
 
 		// if (!data.entities.users[message.author.id])
 		data.entities.users[message.author.id] = {
@@ -87,14 +90,12 @@ module.exports.add = (message) => {
 			color: r.color === 0 ? 7506394 : r.color
 		});
 
-		fs.writeFileSync(join(__dirname, json), JSON.stringify(data));
+		await writeFile(join(__dirname, json), JSON.stringify(data));
 
 	}
 };
 
-module.exports.export = (Ticket, channel) => new Promise((resolve, reject) => {	
-
-	(async () => {
+module.exports.export = (Ticket, channel) => new Promise(async (resolve, reject) => {	
 		let ticket = await Ticket.findOne({
 			where: {
 				channel: channel.id
@@ -104,9 +105,9 @@ module.exports.export = (Ticket, channel) => new Promise((resolve, reject) => {
 		let raw = `../../user/transcripts/raw/${channel.id}.log`,
 			json = `../../user/transcripts/raw/entities/${channel.id}.json`;
 
-		if (!config.transcripts.web.enabled || !fs.existsSync(join(__dirname, raw)) || !fs.existsSync(join(__dirname, json))) return reject(false);
+		if (!config.transcripts.web.enabled || !await exists(join(__dirname, raw)) || !await exists(join(__dirname, json))) return reject(false);
 
-		let data = JSON.parse(fs.readFileSync(join(__dirname, json)));
+		let data = JSON.parse(await readFile(join(__dirname, json)));
 
 		data.ticket = {
 			id: ticket.id,
@@ -117,16 +118,21 @@ module.exports.export = (Ticket, channel) => new Promise((resolve, reject) => {
 		};
 
 		data.messages = [];
-		let line;
 
-		const lineByLine = new Readlines(join(__dirname, raw));
+		const logLines = await readFile(join(__dirname, raw), {
+			encoding: "utf-8"
+		}).then(r => r.split("\n"));
 
-		// eslint-disable-next-line no-cond-assign
-		while (line = lineByLine.next()) {
-			let message = JSON.parse(line.toString('utf8'));
-			let index = data.messages.findIndex(m => m.id === message.id);
-			if (index === -1) data.messages.push(message);
-			else data.messages[index] = message;
+		const messages = new Map();
+
+		for (const line of logLines) {
+			const message = JSON.parse(line);
+			if (!messages.has(message.id)) {
+				const idx = data.messages.push(message) - 1;
+				messages.set(message.id, idx);
+			} else {
+				data.messages[messages.get(message.id)] = message;
+			}
 		}
 
 		let endpoint = config.transcripts.web.server;
@@ -149,13 +155,12 @@ module.exports.export = (Ticket, channel) => new Promise((resolve, reject) => {
 
 				log.success(`Uploaded ticket #${ticket.id} archive to server`);
 
-				fs.unlinkSync(join(__dirname, raw));
-				fs.unlinkSync(join(__dirname, json));
+				await unlink(join(__dirname, raw));
+				await unlink(join(__dirname, json));
 
 				resolve(res.url);
 			}).catch(e => {
 				log.warn(e);
 				return resolve(e);
 			});
-	})();
 });

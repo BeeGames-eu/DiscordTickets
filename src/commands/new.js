@@ -9,7 +9,7 @@
 const Logger = require('leekslazylogger');
 const log = new Logger();
 const { MessageEmbed } = require('discord.js');
-const fs = require('fs');
+const { promises: { readdir } } = require('fs');
 const { join } = require('path');
 
 module.exports = {
@@ -150,7 +150,7 @@ module.exports = {
 			await c.send(ping + `${message.author} has created a new ticket`);
 
 			if (config.tickets.send_img) {
-				const images = fs.readdirSync(join(__dirname, '../../user/images'));
+				const images = await readdir(join(__dirname, '../../user/images'));
 				await c.send({
 					files: [
 						join(__dirname, '../../user/images', images[Math.floor(Math.random() * images.length)])

@@ -6,8 +6,10 @@
  *
  */
 
-const fs = require('fs');
+const { promises: { access }} = require("fs");
 const { join } = require('path');
+
+const exists = path => access(path).then(() => true, () => false);
 
 const {
 	MessageEmbed
@@ -62,7 +64,7 @@ module.exports = {
 			.setFooter(guild.name, guild.iconURL());
 
 		let file = `../../user/transcripts/text/${ticket.channel}.txt`;
-		if (fs.existsSync(join(__dirname, file))) {
+		if (await exists(join(__dirname, file))) {
 			embed.addField('Text transcript', 'See attachment');
 			res.files = [
 				{

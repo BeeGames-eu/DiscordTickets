@@ -7,8 +7,10 @@
  */
 
 const { MessageEmbed } = require('discord.js');
-const fs = require('fs');
+const { promises: { access }} = require("fs");
 const { join } = require('path');
+
+const exists = path => access(path).then(() => true, () => false);
 
 module.exports = {
 	name: 'tickets',
@@ -88,7 +90,7 @@ module.exports = {
 			let desc = closedTickets.rows[t].topic.substring(0, 30);
 			let transcript = '';
 			let c = closedTickets.rows[t].channel;
-			if (config.transcripts.web.enabled || fs.existsSync(join(__dirname, `../../user/transcripts/text/${c}.txt`))) {
+			if (config.transcripts.web.enabled || await exists(join(__dirname, `../../user/transcripts/text/${c}.txt`))) {
 				transcript = `\n> Type \`${config.prefix}transcript ${closedTickets.rows[t].id}\` to view.`;
 			}
 

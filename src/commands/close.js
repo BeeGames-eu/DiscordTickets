@@ -9,9 +9,11 @@
 const Logger = require('leekslazylogger');
 const log = new Logger();
 const { MessageEmbed } = require('discord.js');
-const fs = require('fs');
+const { promises: { access } } = require("fs");
 const { join } = require('path');
 const archive = require('../modules/archive');
+
+const exists = path => access(path).then(() => true, () => false);
 
 module.exports = {
 	name: 'close',
@@ -73,8 +75,8 @@ module.exports = {
 			);
 
 		let success;
-		let pre = fs.existsSync(join(__dirname, `../../user/transcripts/text/${channel.id}.txt`)) ||
-			fs.existsSync(join(__dirname, `../../user/transcripts/raw/${channel.id}.log`)) ?
+		let pre = (await exists(join(__dirname, `../../user/transcripts/text/${channel.id}.txt`)) ||
+				await exists(join(__dirname, `../../user/transcripts/raw/${channel.id}.log`))) ?
 			`You will be able to view an archived version later with \`${config.prefix}transcript ${ticket.id}\`` :
 			'';
 
@@ -135,7 +137,7 @@ module.exports = {
 						.setTitle(`Ticket ${ticket.id}`)
 						.setFooter(guild.name, guild.iconURL());
 
-					if (fs.existsSync(join(__dirname, `../../user/transcripts/text/${ticket.get('channel')}.txt`))) {
+					if (await exists(join(__dirname, `../../user/transcripts/text/${ticket.get('channel')}.txt`))) {
 						embed.addField('Text transcript', 'See attachment');
 						res.files = [{
 							attachment: join(__dirname, `../../user/transcripts/text/${ticket.get('channel')}.txt`),
@@ -143,7 +145,8 @@ module.exports = {
 						}];
 					}
 
-					if (fs.existsSync(join(__dirname, `../../user/transcripts/raw/${ticket.get('channel')}.log`)) && fs.existsSync(join(__dirname, `../../user/transcripts/raw/entities/${ticket.get('channel')}.json`))) {
+					if (await exists(join(__dirname, `../../user/transcripts/raw/${ticket.get('channel')}.log`)) &&
+						await exists(join(__dirname, `../../user/transcripts/raw/entities/${ticket.get('channel')}.json`))) {
 						embed.addField('Web archive', await archive.export(Ticket, channel));
 					}
 
@@ -153,7 +156,7 @@ module.exports = {
 
 					res.embed = embed;
 
-					
+
 					try {
 						dm.send(res).then();
 					} catch (e) {

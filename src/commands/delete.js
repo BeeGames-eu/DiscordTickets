@@ -11,8 +11,10 @@ const log = new Logger();
 const {
 	MessageEmbed
 } = require('discord.js');
-const fs = require('fs');
+const { promises: { access, unlink } } = require("fs");
 const { join } = require('path');
+
+const exists = path => access(path).then(() => true, () => false);
 
 module.exports = {
 	name: 'delete',
@@ -122,9 +124,9 @@ module.exports = {
 				raw = join(__dirname, `../../user/transcripts/raw/${ticket.get('channel')}.log`),
 				json = join(__dirname, `../../user/transcripts/raw/entities/${ticket.get('channel')}.json`);
 
-			if (fs.existsSync(txt)) fs.unlinkSync(txt);
-			if (fs.existsSync(raw)) fs.unlinkSync(raw);
-			if (fs.existsSync(json)) fs.unlinkSync(json);
+			if (await exists(txt)) await unlink(txt);
+			if (await exists(raw)) await unlink(raw);
+			if (await exists(json)) await unlink(json);
 
 			// update database
 			success = true;

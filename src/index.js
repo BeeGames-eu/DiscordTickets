@@ -15,6 +15,7 @@ const version = Number(process.version.split('.')[0].replace('v', ''));
 if (!version === 12 || !version > 12) return console.log('Please upgrade to Node v12 or higher');
 
 const fs = require('fs');
+const { promises: { readdir, unlink, stat } } = fs;
 const { join } = require('path');
 
 let dev = fs.existsSync(join(__dirname, '../user/dev.env')) && fs.existsSync(join(__dirname, '../user/dev.config.js'));
@@ -145,14 +146,18 @@ log.info(`Loaded ${events.length} events and ${commands.length} commands`);
 
 const one_day = 1000 * 60 * 60 * 24;
 const txt = '../user/transcripts/text';
-const clean = () => {
-	const files = fs.readdirSync(join(__dirname, txt)).filter(file => file.endsWith('.txt'));
+const clean = async () => {
+	const files = await readdir(join(__dirname, txt)).filter(file => file.endsWith('.txt'));
 	let total = 0;
 	for (const file of files) {
-		let diff = (new Date() - new Date(fs.statSync(join(__dirname, txt, file)).mtime));
-		if (Math.floor(diff / one_day) > config.transcripts.text.keep_for) {
-			fs.unlinkSync(join(__dirname, txt, file));
-			total++;
+		try {
+			const diff = (new Date() - new Date((await stat(join(__dirname, txt, file))).mtime));
+			if (Math.floor(diff / one_day) > config.transcripts.text.keep_for) {
+				await unlink(join(__dirname, txt, file));
+				total++;
+			}
+		} catch {
+			continue;
 		}
 	}
 	if (total > 0) log.info(`Deleted ${total} old text ${utils.plural('transcript', total)}`);
