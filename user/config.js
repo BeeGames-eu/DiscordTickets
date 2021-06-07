@@ -28,7 +28,7 @@
 
 module.exports = {
 	prefix: '-',
-	name: 'DiscordTickets',
+	name: 'BeeGames - Support',
 	presences: [
 		{
 			activity: '%snew',
@@ -48,16 +48,16 @@ module.exports = {
 	err_colour: 'RED',
 	cooldown: 3,
 
-	guild: '', // ID of your guild
-	staff_role: '', // ID of your Support Team role
+	guild: '824022859126931496', // ID of your guild
+	staff_role: '827089636462952469', // ID of your Support Team role
 
 	tickets: {
-		category: '', // ID of your tickets category
-		send_img: true,
-		ping: 'here',
-		text: `Hello there, {{ tag }}!
-		A member of staff will assist you shortly.
-		In the mean time, please describe your issue in as much detail as possible! :)`,
+		category: '827089638781878272', // ID of your tickets category
+		send_img: false,
+		ping: false,
+		text: `Zdravím, {{ tag }}!
+		Člen týmu se ti bude brzy věnovat.
+		Mezitím se pokus co nejlépe popsat tvůj problém :)`,
 		pin: false,
 		max: 3
 	},
@@ -71,13 +71,13 @@ module.exports = {
 			enabled: false,
 			server: 'https://tickets.example.com',
 		},
-		channel: "" // ID of the ticket dump channel
+		channel: "848989224262697000" // ID of the ticket dump channel
 	},
 
 	panel: {
-		title: 'Support Tickets',
-		description: 'Need help? No problem! React to this panel to create a new support ticket so our Support Team can assist you.',
-		reaction: '🧾'
+		title: '📝 Podpora',
+		description: 'Potřebuješ pomoci, nebo se chceš na něco zeptat? Zareaguj na tuto zprávu pro vytvoření nového ticketu.',
+		reaction: '📝'
 	},
 
 	storage: {
