@@ -158,9 +158,12 @@ module.exports = {
 
 
 					try {
-						dm.send(res).then();
+						await Promise.all([
+							dm.send(res),
+							client.channels.cache.get(config.transcripts.channel)?.send(res) ?? Promise.resolve()
+						]);
 					} catch (e) {
-						message.channel.send('❌ Couldn\'t send DM');
+						message.channel.send('❌ Couldn\'t send transcript');
 					}
 				}
 			}

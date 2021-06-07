@@ -70,7 +70,8 @@ module.exports = {
 		web: {
 			enabled: false,
 			server: 'https://tickets.example.com',
-		}
+		},
+		channel: "" // ID of the ticket dump channel
 	},
 
 	panel: {
