@@ -10,10 +10,10 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	name: 'rename',
-	description: 'Rename a ticket channel',
-	usage: '<new name>',
+	description: 'Změní název ticketu',
+	usage: '<nový název>',
 	aliases: ['none'],
-	example: 'rename important-ticket',
+	example: 'rename důležitý-ticket',
 	args: true,
 	async execute(client, message, args, {config, Ticket}) {
 		const guild = client.guilds.cache.get(config.guild);
@@ -29,10 +29,10 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.err_colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle('❌ **This isn\'t a ticket channel**')
-					.setDescription('Use this command in the ticket channel you want to rename.')
-					.addField('Usage', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
-					.addField('Help', `Type \`${config.prefix}help ${this.name}\` for more information`)
+					.setTitle('❌ **Nejsi v kanálu s ticketem**')
+					.setDescription('Použij tento příkaz v kanálu ticketu, který chceš přejmenovat.')
+					.addField('Použití', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
+					.addField('Pomoc', `Napiš \`${config.prefix}help ${this.name}\` pro více informací`)
 					.setFooter(guild.name, guild.iconURL())
 			);
 		}
@@ -42,10 +42,10 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.err_colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle('❌ **No permission**')
-					.setDescription('You don\'t have permission to rename this channel as you are not staff.')
-					.addField('Usage', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
-					.addField('Help', `Type \`${config.prefix}help ${this.name}\` for more information`)
+					.setTitle('❌ **Chybějící oprávnění**')
+					.setDescription(`Nemáš právo přejmenovat tento kanál, protože nejsi členem týmu.`)
+					.addField('Použití', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
+					.addField('Pomoc', `Napiš \`${config.prefix}help ${this.name}\` pro více informací`)
 					.setFooter(guild.name, guild.iconURL())
 			);
 
@@ -55,8 +55,8 @@ module.exports = {
 			new MessageEmbed()
 				.setColor(config.colour)
 				.setAuthor(message.author.username, message.author.displayAvatarURL())
-				.setTitle('✅ **Ticket updated**')
-				.setDescription('The name has been changed.')
+				.setTitle('✅ **Ticket aktualizován**')
+				.setDescription('Název ticketu byl změněn.')
 				.setFooter(client.user.username, client.user.displayAvatarURL())
 		);
 	}

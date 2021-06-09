@@ -10,10 +10,10 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	name: 'topic',
-	description: 'Edit a ticket topic',
-	usage: '<topic>',
+	description: 'Změní téma ticketu',
+	usage: '<téma>',
 	aliases: ['edit'],
-	example: 'topic need help error',
+	example: 'topic nemůžu použít /lobby',
 	args: true,
 	async execute(client, message, args, {config, Ticket}) {
 		const guild = client.guilds.cache.get(config.guild);
@@ -29,10 +29,10 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.err_colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle('❌ **This isn\'t a ticket channel**')
-					.setDescription('Use this command in the ticket channel you want to close, or mention the channel.')
-					.addField('Usage', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
-					.addField('Help', `Type \`${config.prefix}help ${this.name}\` for more information`)
+					.setTitle('❌ **Nejsi v kanálu s ticketem**')
+					.setDescription('Použij tento příkaz v kanálu ticketu, ve kterém chceš změnit téma, nebo jej zmiň.')
+					.addField('Použití', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
+					.addField('Pomoc', `Napiš \`${config.prefix}help ${this.name}\` pro více informací`)
 					.setFooter(guild.name, guild.iconURL())
 			);
 		}
@@ -43,8 +43,8 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.err_colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle('❌ **Description too long**')
-					.setDescription('Please limit your ticket topic to less than 256 characters. A short sentence will do.')
+					.setTitle('❌ **Popis je příliš dlouhý**')
+					.setDescription('Prosím, zkrať téma ticketu na méně než 256 znaků. Jednoduchá věta postačí.')
 					.setFooter(guild.name, guild.iconURL())
 			);
 		}
@@ -63,8 +63,8 @@ module.exports = {
 			new MessageEmbed()
 				.setColor(config.colour)
 				.setAuthor(message.author.username, message.author.displayAvatarURL())
-				.setTitle('✅ **Ticket updated**')
-				.setDescription('The topic has been changed.')
+				.setTitle('✅ **Ticket aktualizován**')
+				.setDescription('Téma bylo změněno.')
 				.setFooter(client.user.username, client.user.displayAvatarURL())
 		);
 	}

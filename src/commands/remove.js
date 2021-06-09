@@ -12,10 +12,10 @@ const log = new Logger();
 
 module.exports = {
 	name: 'remove',
-	description: 'Remove a member from ticket channel',
-	usage: '<@member> [... #channel]',
+	description: 'Odebere uživatele z ticketu', //Remove a member from ticket channel
+	usage: '<@člen> [... #kanál]',
 	aliases: ['none'],
-	example: 'remove @member from #ticket-23',
+	example: 'remove @Člen #ticket-23',
 	args: true,
 	async execute(client, message, args, {config, Ticket}) {
 		const guild = client.guilds.cache.get(config.guild);
@@ -23,11 +23,12 @@ module.exports = {
 		const notTicket = new MessageEmbed()
 			.setColor(config.err_colour)
 			.setAuthor(message.author.username, message.author.displayAvatarURL())
-			.setTitle('❌ **This isn\'t a ticket channel**')
-			.setDescription('Use this command in the ticket channel you want to remove a user from, or mention the channel.')
-			.addField('Usage', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
-			.addField('Help', `Type \`${config.prefix}help ${this.name}\` for more information`)
+			.setTitle('❌ **Nejsi v kanálu s ticketem**')
+			.setDescription('Použij tento příkaz v kanálu ticketu, odkud chceš uživatele odebrat, nebo jej zmiň.')
+			.addField('Použití', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
+			.addField('Pomoc', `Napiš \`${config.prefix}help ${this.name}\` pro více informací`)
 			.setFooter(guild.name, guild.iconURL());
+
 
 		let ticket;
 
@@ -45,8 +46,8 @@ module.exports = {
 			ticket = await Ticket.findOne({ where: { channel: channel.id } });
 			if (!ticket) {
 				notTicket
-					.setTitle('❌ **Channel is not a ticket**')
-					.setDescription(`${channel} is not a ticket channel.`);
+					.setTitle('❌ **Vybraný kanál není ticket**')
+					.setDescription(`${channel} není kanál s ticketem.`);
 				return message.channel.send(notTicket);
 			}
 		}
@@ -56,10 +57,10 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.err_colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle('❌ **No permission**')
-					.setDescription(`You don't have permission to alter ${channel} as it does not belong to you and you are not staff.`)
-					.addField('Usage', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
-					.addField('Help', `Type \`${config.prefix}help ${this.name}\` for more information`)
+					.setTitle('❌ **Chybějící oprávnění**')
+					.setDescription(`Nemáš právo upravovat ${channel}, protože není tvůj a nejsi členem týmu.`)
+					.addField('Použití', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
+					.addField('Pomoc', `Napiš \`${config.prefix}help ${this.name}\` pro více informací`)
 					.setFooter(guild.name, guild.iconURL())
 			);
 		}
@@ -71,10 +72,10 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.err_colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle('❌ **Unknown member**')
-					.setDescription('Please mention a valid member.')
-					.addField('Usage', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
-					.addField('Help', `Type \`${config.prefix}help ${this.name}\` for more information`)
+					.setTitle('❌ **Neznámý uživatel**')
+					.setDescription('Prosím, zmiň správného uživatele.')
+					.addField('Použití', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
+					.addField('Pomoc', `Napiš \`${config.prefix}help ${this.name}\` pro více informací`)
 					.setFooter(guild.name, guild.iconURL())
 			);
 
@@ -91,8 +92,8 @@ module.exports = {
 					new MessageEmbed()
 						.setColor(config.colour)
 						.setAuthor(member.user.username, member.user.displayAvatarURL())
-						.setTitle('**Member removed**')
-						.setDescription(`${member} has been removed by ${message.author}`)
+						.setTitle('✅ **Uživatel odebrán**')
+						.setDescription(`Uživatel ${member} byl odebrán uživatelem ${message.author}`)
 						.setFooter(guild.name, guild.iconURL())
 				);
 			}
@@ -101,8 +102,8 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.colour)
 					.setAuthor(member.user.username, member.user.displayAvatarURL())
-					.setTitle('✅ **Member removed**')
-					.setDescription(`${member} has been removed from <#${ticket.channel}>`)
+					.setTitle('✅ **Uživatel odebrán**')
+					.setDescription(`Uživatel ${member} byl odebrán z <#${ticket.channel}>`)
 					.setFooter(guild.name, guild.iconURL())
 			);
 

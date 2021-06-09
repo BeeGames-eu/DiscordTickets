@@ -40,8 +40,8 @@ module.exports = {
 			return channel.send(
 				new MessageEmbed()
 					.setColor(config.err_colour)
-					.setTitle('❌ **Error**')
-					.setDescription(`${config.name} has not been set up correctly. Could not find a 'support team' role with the id \`${config.staff_role}\``)
+					.setTitle('❌ **Chyba**')
+					.setDescription(`${config.name} nebyl nastaven správně. Nemohla být nalezena role týmu s ID \`${config.staff_role}\``)
 					.setFooter(channel.guild.name, channel.guild.iconURL())
 			);
 		}
@@ -72,8 +72,8 @@ module.exports = {
 					new MessageEmbed()
 						.setColor(config.err_colour)
 						.setAuthor(u.username, u.displayAvatarURL())
-						.setTitle(`❌ **You already have ${tickets.count} or more open tickets**`)
-						.setDescription(`Use \`${config.prefix}close\` in a server channel to close unneeded tickets.\n\n${ticketList.join(',\n')}`)
+						.setTitle(`❌ **Již máš ${tickets.count} nebo více otevřených ticketů**`)
+						.setDescription(`Napiš \`${config.prefix}close\`, abys uzavřel nepotřebné tickety.\n\n${ticketList.join(',\n')}`)
 						.setFooter(channel.guild.name, channel.guild.iconURL())
 				);
 			} catch (e) {
@@ -81,15 +81,15 @@ module.exports = {
 					new MessageEmbed()
 						.setColor(config.err_colour)
 						.setAuthor(u.username, u.displayAvatarURL())
-						.setTitle(`❌ **You already have ${tickets.count} or more open tickets**`)
-						.setDescription(`Use \`${config.prefix}close\` to close unneeded tickets.\n\n${ticketList.join(',\n')}`)
-						.setFooter(channel.guild.name + ' | This message will be deleted in 15 seconds', channel.guild.iconURL())
+						.setTitle(`❌ **Již máš ${tickets.count} nebo více otevřených ticketů**`)
+						.setDescription(`Napiš \`${config.prefix}close\`, abys uzavřel nepotřebné tickety.\n\n${ticketList.join(',\n')}`)
+						.setFooter(channel.guild.name + ' | Tato zpráva bude smazána za 15 sekund.', channel.guild.iconURL())
 				);
 				return m.delete({ timeout: 15000 });
 			}
 		}
 
-		let topic = 'No topic given (created via panel)';
+		let topic = 'Bez popisu (vytvořeno přes panel)';
 
 		let ticket = await Ticket.create({
 			channel: '',
@@ -146,7 +146,7 @@ module.exports = {
 				ping = `@${config.tickets.ping},\n`;
 			}
 
-			await c.send(ping + `${u} has created a new ticket`);
+			await c.send(ping + `${u} vytvořil nový ticket`);
 
 			if (config.tickets.send_img) {
 				const images = await readdir(join(__dirname, '../../user/images'));
@@ -167,7 +167,7 @@ module.exports = {
 					.setColor(config.colour)
 					.setAuthor(u.username, u.displayAvatarURL())
 					.setDescription(text)
-					.addField('Topic', `\`${topic}\``)
+					.addField('Téma', `\`${topic}\``)
 					.setFooter(channel.guild.name, channel.guild.iconURL())
 			);
 
@@ -179,10 +179,10 @@ module.exports = {
 					new MessageEmbed()
 						.setColor(config.colour)
 						.setAuthor(u.username, u.displayAvatarURL())
-						.setTitle('New ticket (via panel)')
+						.setTitle('Nový ticket (přes panel)')
 						.setDescription(`\`${topic}\``)
-						.addField('Creator', u, true)
-						.addField('Channel', c, true)
+						.addField('Autor', u, true)
+						.addField('Kanál', c, true)
 						.setFooter(channel.guild.name, channel.guild.iconURL())
 						.setTimestamp()
 				);

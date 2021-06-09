@@ -14,10 +14,10 @@ const { join } = require('path');
 
 module.exports = {
 	name: 'new',
-	description: 'Create a new support ticket',
-	usage: '[brief description]',
+	description: 'Vytvoří nový ticket',
+	usage: '[popis]',
 	aliases: ['ticket', 'open'],
-	example: 'new my server won\'t start',
+	example: 'new Nemohu se připojit na server',
 	args: false,
 	async execute(client, message, args, {config, Ticket}) {
 		const guild = client.guilds.cache.get(config.guild);
@@ -27,8 +27,8 @@ module.exports = {
 			return message.channel.send(
 				new MessageEmbed()
 					.setColor(config.err_colour)
-					.setTitle('❌ **Error**')
-					.setDescription(`${config.name} has not been set up correctly. Could not find a 'support team' role with the id \`${config.staff_role}\``)
+					.setTitle('❌ **Chyba**')
+					.setDescription(`${config.name} nebyl nastaven správně. Nemohla být nalezena role týmu s ID \`${config.staff_role}\``)
 					.setFooter(guild.name, guild.iconURL())
 			);
 
@@ -53,9 +53,9 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.err_colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle(`❌ **You already have ${tickets.count} or more open tickets**`)
-					.setDescription(`Use \`${config.prefix}close\` to close unneeded tickets.\n\n${ticketList.join(',\n')}`)
-					.setFooter(guild.name + ' | This message will be deleted in 15 seconds', guild.iconURL())
+					.setTitle(`❌ **Již máš ${tickets.count} nebo více otevřených ticketů**`)
+					.setDescription(`Napiš \`${config.prefix}close\`, abys uzavřel nepotřebné tickety.\n\n${ticketList.join(',\n')}`)
+					.setFooter(guild.name + ' | Tato zpráva bude smazána za 15 sekund.', guild.iconURL())
 			);
 
 			return setTimeout(async () => {
@@ -71,11 +71,11 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.err_colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle('❌ **Description too long**')
-					.setDescription('Please limit your ticket topic to less than 256 characters. A short sentence will do.')
+					.setTitle('❌ **Popis je příliš dlouhý**')
+					.setDescription('Prosím, zkrať téma ticketu na méně než 256 znaků. Jednoduchá věta postačí.')
 					.setFooter(guild.name, guild.iconURL())
 			);
-		else if (topic.length < 1) topic = 'No topic given';
+		else if (topic.length < 1) topic = 'Bez popisu';
 
 		let ticket = await Ticket.create({
 			channel: '',
@@ -123,9 +123,9 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle('✅ **Ticket created**')
-					.setDescription(`Your ticket has been created: ${c}`)
-					.setFooter(client.user.username + ' | This message will be deleted in 15 seconds', client.user.displayAvatarURL())
+					.setTitle('✅ **Ticket vytvořen**')
+					.setDescription(`Tvůj ticket byl vytvořen: ${c}`)
+					.setFooter(client.user.username + ' | Tato zpráva bude odstraněna za 15 sekund', client.user.displayAvatarURL())
 			);
 
 			setTimeout(async () => {
@@ -147,7 +147,7 @@ module.exports = {
 				ping = `@${config.tickets.ping},\n`;
 			}
 
-			await c.send(ping + `${message.author} has created a new ticket`);
+			await c.send(ping + `${message.author} vytvořil nový ticket`);
 
 			if (config.tickets.send_img) {
 				const images = await readdir(join(__dirname, '../../user/images'));
@@ -168,7 +168,7 @@ module.exports = {
 					.setColor(config.colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
 					.setDescription(text)
-					.addField('Topic', `\`${topic}\``)
+					.addField('Téma', `\`${topic}\``)
 					.setFooter(guild.name, guild.iconURL())
 			);
 
@@ -180,10 +180,10 @@ module.exports = {
 					new MessageEmbed()
 						.setColor(config.colour)
 						.setAuthor(message.author.username, message.author.displayAvatarURL())
-						.setTitle('New ticket')
+						.setTitle('Nový ticket')
 						.setDescription(`\`${topic}\``)
-						.addField('Creator', message.author, true)
-						.addField('Channel', c, true)
+						.addField('Autor', message.author, true)
+						.addField('Kanál', c, true)
 						.setFooter(guild.name, guild.iconURL())
 						.setTimestamp()
 				);

@@ -12,7 +12,7 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	name: 'panel',
-	description: 'Create or a panel widget in the channel the command is used in. Note that there can only be 1 panel.',
+	description: 'Vytvoří panel v kanálu, kde je příkaz použit. Měj na vědomí, že panel může být jen jeden.',
 	usage: '',
 	aliases: ['widget'],
 	args: false,

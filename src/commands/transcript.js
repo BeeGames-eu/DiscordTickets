@@ -17,7 +17,7 @@ const {
 
 module.exports = {
 	name: 'transcript',
-	description: 'Download a transcript',
+	description: 'Stáhne přepis ticketu',
 	usage: '<ticket-id>',
 	aliases: ['archive', 'download'],
 	example: 'transcript 57',
@@ -39,8 +39,8 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.err_colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle('❌ **Unknown ticket**')
-					.setDescription('Couldn\'t find a closed ticket with that ID')
+					.setTitle('❌ **Neznámý ticket**')
+					.setDescription('Nebyl nalezen uzavřený ticket s tímto ID') //Couldn\'t find a closed ticket with that ID
 					.setFooter(guild.name, guild.iconURL())
 			);
 		}
@@ -50,8 +50,10 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.err_colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle('❌ **No permission**')
-					.setDescription(`You don't have permission to view ticket ${id} as it does not belong to you and you are not staff.`)
+					.setTitle('❌ **Chybějící oprávnění**')
+					.setDescription(`Nemáš právo si stáhnout přepis ticketu ${id}, protože není tvůj a nejsi členem týmu.`)
+					.addField('Použití', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
+					.addField('Pomoc', `Napiš \`${config.prefix}help ${this.name}\` pro více informací`)
 					.setFooter(guild.name, guild.iconURL())
 			);
 		}
@@ -65,7 +67,7 @@ module.exports = {
 
 		let file = `../../user/transcripts/text/${ticket.channel}.txt`;
 		if (await exists(join(__dirname, file))) {
-			embed.addField('Text transcript', 'See attachment');
+			embed.addField('Textový přepis', 'Viz příloha');
 			res.files = [
 				{
 					attachment: join(__dirname, file),
@@ -76,9 +78,9 @@ module.exports = {
 
 
 		const BASE_URL = config.transcripts.web.server;
-		if (config.transcripts.web.enabled) embed.addField('Web archive', `${BASE_URL}/${ticket.creator}/${ticket.channel}`);
+		if (config.transcripts.web.enabled) embed.addField('Webový přepis', `${BASE_URL}/${ticket.creator}/${ticket.channel}`);
 
-		if (embed.fields.length < 1) embed.setDescription(`No text transcripts or archive data exists for ticket ${id}`);
+		if (embed.fields.length < 1) embed.setDescription(`Textový přepis ani archivní data pro ticket ${ticket.id} neexistují`); //No text transcripts or archive data exists for ticket
 
 		res.embed = embed;
 

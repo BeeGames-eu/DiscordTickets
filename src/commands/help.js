@@ -12,7 +12,7 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	name: 'help',
-	description: 'Display help menu',
+	description: 'Zobrazí menu nápovědy',
 	usage: '[command]',
 	aliases: ['command', 'commands'],
 	example: 'help new',
@@ -20,6 +20,7 @@ module.exports = {
 	execute(client, message, args, {config}) {
 		const guild = client.guilds.cache.get(config.guild);
 
+		// TODO(TTtie): tohle je na picu, prepsat...
 		const commands = Array.from(client.commands.values());
 
 		if (!args.length) {
@@ -37,12 +38,12 @@ module.exports = {
 
 			message.channel.send(
 				new MessageEmbed()
-					.setTitle('Commands')
+					.setTitle('Příkazy')
 					.setColor(config.colour)
 					.setDescription(
-						`\nThe commands you have access to are listed below. Type \`${config.prefix}help [command]\` for more information about a specific command.
+						`\nPříkazy, ke kterým máš přístup, jsou vypsány níže. Napiš \`${config.prefix}help [příkaz]\` pro více informací o určitém příkazu.
 						\n${cmds.join('\n\n')}
-						\nPlease contact a member of staff if you require assistance.`
+						\nProsím, kontaktuj člena týmu, pokud chceš s něčím pomoci.`
 					)
 					.setFooter(guild.name, guild.iconURL())
 			).catch((error) => {
@@ -58,7 +59,7 @@ module.exports = {
 				return message.channel.send(
 					new MessageEmbed()
 						.setColor(config.err_colour)
-						.setDescription(`❌ **Invalid command name** (\`${config.prefix}help\`)`)
+						.setDescription(`❌ **Neplatný příkaz** (napiš \`${config.prefix}help\` pro jejich seznam)`)
 				);
 
 
@@ -70,16 +71,16 @@ module.exports = {
 			if (command.long) cmd.setDescription(command.long);
 			else cmd.setDescription(command.description);
 
-			if (command.aliases) cmd.addField('Aliases', `\`${command.aliases.join(', ')}\``, true);
+			if (command.aliases) cmd.addField('Aliasy', `\`${command.aliases.join(', ')}\``, true);
 
-			if (command.usage) cmd.addField('Usage', `\`${config.prefix}${command.name} ${command.usage}\``, false);
+			if (command.usage) cmd.addField('Použití', `\`${config.prefix}${command.name} ${command.usage}\``, false);
 
-			if (command.usage) cmd.addField('Example', `\`${config.prefix}${command.example}\``, false);
+			if (command.usage) cmd.addField('Příklad', `\`${config.prefix}${command.example}\``, false);
 
 
 			if (command.permission && !message.member.hasPermission(command.permission)) {
-				cmd.addField('Required Permission', `\`${command.permission}\` :exclamation: You don't have permission to use this command`, true);
-			} else cmd.addField('Required Permission', `\`${command.permission || 'none'}\``, true);
+				cmd.addField('Vyžadované oprávnění', `\`${command.permission}\` :exclamation: Nemáš právo používat tento příkaz`, true);
+			} else cmd.addField('Vyžadované oprávnění', `\`${command.permission || 'none'}\``, true);
 
 			message.channel.send(cmd);
 		}

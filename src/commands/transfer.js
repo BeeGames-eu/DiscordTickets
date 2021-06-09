@@ -10,10 +10,10 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	name: 'transfer',
-	description: 'Transfer ownership of a ticket channel',
-	usage: '<@member>',
+	description: 'Převede vlastnictví ticketu na někoho jiného',
+	usage: '<@člen>',
 	aliases: ['none'],
-	example: 'transfer @user',
+	example: 'transfer @Člen',
 	args: true,
 	async execute(client, message, args, { config, Ticket }) {
 		const guild = client.guilds.cache.get(config.guild);
@@ -29,10 +29,10 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.err_colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle('❌ **This isn\'t a ticket channel**')
-					.setDescription('Use this command in the ticket channel you want to change owner.')
-					.addField('Usage', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
-					.addField('Help', `Type \`${config.prefix}help ${this.name}\` for more information`)
+					.setTitle('❌ **Nejsi v kanálu s ticketem**')
+					.setDescription('Použij tento příkaz v kanálu ticketu, který chceš uzavřít, nebo jej zmiň.')
+					.addField('Použití', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
+					.addField('Pomoc', `Napiš \`${config.prefix}help ${this.name}\` pro více informací`)
 					.setFooter(guild.name, guild.iconURL())
 			);
 		}
@@ -42,10 +42,10 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.err_colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle('❌ **No permission**')
-					.setDescription('You don\'t have permission to change ownership of this channel as you are not staff.')
-					.addField('Usage', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
-					.addField('Help', `Type \`${config.prefix}help ${this.name}\` for more information`)
+					.setTitle('❌ **Chybějící oprávnění**')
+					.setDescription(`Nemáš právo přenést vlastnictví tohoto ticketu, protože nejsi členem týmu.`)
+					.addField('Použití', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
+					.addField('Pomoc', `Napiš \`${config.prefix}help ${this.name}\` pro více informací`)
 					.setFooter(guild.name, guild.iconURL())
 			);
 
@@ -56,10 +56,10 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.err_colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle('❌ **Unknown member**')
-					.setDescription('Please mention a valid member.')
-					.addField('Usage', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
-					.addField('Help', `Type \`${config.prefix}help ${this.name}\` for more information`)
+					.setTitle('❌ **Neznámý uživatel**')
+					.setDescription('Prosím, zmiň správného uživatele.')
+					.addField('Použití', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
+					.addField('Pomoc', `Napiš \`${config.prefix}help ${this.name}\` pro více informací`)
 					.setFooter(guild.name, guild.iconURL())
 			);
 		}
@@ -79,8 +79,8 @@ module.exports = {
 			new MessageEmbed()
 				.setColor(config.colour)
 				.setAuthor(message.author.username, message.author.displayAvatarURL())
-				.setTitle('✅ **Ticket transferred**')
-				.setDescription(`Ownership of this ticket has been transferred to ${member}.`)
+				.setTitle('✅ **Vlastnictví ticketu přeneseno**')
+				.setDescription(`Vlastnictví ticketu bylo přeneseno na uživatele ${member}.`)
 				.setFooter(client.user.username, client.user.displayAvatarURL())
 		);
 	}

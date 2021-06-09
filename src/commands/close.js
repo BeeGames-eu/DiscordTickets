@@ -17,7 +17,7 @@ const exists = path => access(path).then(() => true, () => false);
 
 module.exports = {
 	name: 'close',
-	description: 'Close a ticket; either a specified (mentioned) channel, or the channel the command is used in.',
+	description: 'Zavře ticket; buď zmíněný kanál, nebo kanál, ve kterém je příkaz použit.',
 	usage: '[ticket]',
 	aliases: ['none'],
 	example: 'close #ticket-17',
@@ -28,10 +28,10 @@ module.exports = {
 		const notTicket = new MessageEmbed()
 			.setColor(config.err_colour)
 			.setAuthor(message.author.username, message.author.displayAvatarURL())
-			.setTitle('❌ **This isn\'t a ticket channel**')
-			.setDescription('Use this command in the ticket channel you want to close, or mention the channel.')
-			.addField('Usage', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
-			.addField('Help', `Type \`${config.prefix}help ${this.name}\` for more information`)
+			.setTitle('❌ **Nejsi v kanálu s ticketem**')
+			.setDescription('Použij tento příkaz v kanálu ticketu, který chceš uzavřít, nebo jej zmiň.')
+			.addField('Použití', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
+			.addField('Pomoc', `Napiš \`${config.prefix}help ${this.name}\` pro více informací`)
 			.setFooter(guild.name, guild.iconURL());
 
 		let ticket;
@@ -55,8 +55,8 @@ module.exports = {
 			});
 			if (!ticket) {
 				notTicket
-					.setTitle('❌ **Channel is not a ticket**')
-					.setDescription(`${channel} is not a ticket channel.`);
+					.setTitle('❌ **Vybraný kanál není ticket**')
+					.setDescription(`${channel} není kanál s ticketem.`);
 				return message.channel.send(notTicket);
 			}
 
@@ -67,26 +67,26 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.err_colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle('❌ **No permission**')
-					.setDescription(`You don't have permission to close ${channel} as it does not belong to you and you are not staff.`)
-					.addField('Usage', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
-					.addField('Help', `Type \`${config.prefix}help ${this.name}\` for more information`)
+					.setTitle('❌ **Chybějící oprávnění**')
+					.setDescription(`Nemáš právo zavřít ${channel}, protože není tvůj a nejsi členem týmu.`)
+					.addField('Použití', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
+					.addField('Pomoc', `Napiš \`${config.prefix}help ${this.name}\` pro více informací`)
 					.setFooter(guild.name, guild.iconURL())
 			);
 
 		let success;
 		let pre = (await exists(join(__dirname, `../../user/transcripts/text/${channel.id}.txt`)) ||
 				await exists(join(__dirname, `../../user/transcripts/raw/${channel.id}.log`))) ?
-			`You will be able to view an archived version later with \`${config.prefix}transcript ${ticket.id}\`` :
+			`Budeš moci se později podívat na archiv pomocí \`${config.prefix}transcript ${ticket.id}\`` :
 			'';
 
 		let confirm = await message.channel.send(
 			new MessageEmbed()
 				.setColor(config.colour)
 				.setAuthor(message.author.username, message.author.displayAvatarURL())
-				.setTitle('❔ Are you sure?')
-				.setDescription(`${pre}\n**React with ✅ to confirm.**`)
-				.setFooter(guild.name + ' | Expires in 15 seconds', guild.iconURL())
+				.setTitle('❔ Opravdu chceš ticket zavřít?')
+				.setDescription(`${pre}\n**Zareaguj pomocí ✅ pro potvrzení.**`)
+				.setFooter(guild.name + ' | Vyprší za 15 sekund', guild.iconURL())
 		);
 
 		await confirm.react('✅');
@@ -102,8 +102,8 @@ module.exports = {
 					new MessageEmbed()
 						.setColor(config.colour)
 						.setAuthor(message.author.username, message.author.displayAvatarURL())
-						.setTitle('**Ticket closed**')
-						.setDescription(`Ticket closed by ${message.author}`)
+						.setTitle('✅ **Ticket uzavřen**')
+						.setDescription(`Ticket uzavřen uživatelem ${message.author}`)
 						.setFooter(guild.name, guild.iconURL())
 				);
 			}
@@ -113,8 +113,8 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle(`✅ **Ticket ${ticket.id} closed**`)
-					.setDescription('The channel will be automatically deleted in a few seconds, once the contents have been archived.')
+					.setTitle(`✅ **Ticket ${ticket.id} byl uzavřen**`)
+					.setDescription('Tento kanál bude za chvíli automaticky smazán, až se zarchivuje jeho obsah.')
 					.setFooter(guild.name, guild.iconURL())
 			);
 
@@ -138,7 +138,7 @@ module.exports = {
 						.setFooter(guild.name, guild.iconURL());
 
 					if (await exists(join(__dirname, `../../user/transcripts/text/${ticket.get('channel')}.txt`))) {
-						embed.addField('Text transcript', 'See attachment');
+						embed.addField('Textový přepis', 'Viz příloha');
 						res.files = [{
 							attachment: join(__dirname, `../../user/transcripts/text/${ticket.get('channel')}.txt`),
 							name: `ticket-${ticket.id}-${ticket.get('channel')}.txt`
@@ -147,11 +147,11 @@ module.exports = {
 
 					if (await exists(join(__dirname, `../../user/transcripts/raw/${ticket.get('channel')}.log`)) &&
 						await exists(join(__dirname, `../../user/transcripts/raw/entities/${ticket.get('channel')}.json`))) {
-						embed.addField('Web archive', await archive.export(Ticket, channel));
+						embed.addField('Webový archiv', await archive.export(Ticket, channel));
 					}
 
 					if (embed.fields.length < 1) {
-						embed.setDescription(`No text transcripts or archive data exists for ticket ${ticket.id}`);
+						embed.setDescription(`Textový přepis ani archivní data pro ticket ${ticket.id} neexistují`);
 					}
 
 					res.embed = embed;
@@ -159,11 +159,11 @@ module.exports = {
 
 					try {
 						await Promise.all([
-							dm.send(res),
+							dm.send(res).catch(() => void 0), // ignore failure as it doesn't matter
 							client.channels.cache.get(config.transcripts.channel)?.send(res) ?? Promise.resolve()
 						]);
 					} catch (e) {
-						message.channel.send('❌ Couldn\'t send transcript');
+						message.channel.send('❌ Nelze odeslat přepis');
 					}
 				}
 			}
@@ -193,10 +193,10 @@ module.exports = {
 					new MessageEmbed()
 						.setColor(config.colour)
 						.setAuthor(message.author.username, message.author.displayAvatarURL())
-						.setTitle('Ticket closed')
-						.addField('Creator', `<@${ticket.creator}>`, true)
-						.addField('Closed by', message.author, true)
-						.addField("Ticket ID", ticket.id, true)
+						.setTitle('Ticket uzavřen')
+						.addField('Autor', `<@${ticket.creator}>`, true)
+						.addField('Uzavřen uživatelem', message.author, true)
+						.addField("ID ticketu", ticket.id, true)
 						.setFooter(guild.name, guild.iconURL())
 						.setTimestamp()
 				);
@@ -211,8 +211,8 @@ module.exports = {
 					new MessageEmbed()
 						.setColor(config.err_colour)
 						.setAuthor(message.author.username, message.author.displayAvatarURL())
-						.setTitle('❌ **Expired**')
-						.setDescription('You took too long to react; confirmation failed.')
+						.setTitle('❌ **Čas vypršel**')
+						.setDescription('Trvalo ti moc dlouho zareagovat; operace byla zrušena.')
 						.setFooter(guild.name, guild.iconURL()));
 
 				message.delete({

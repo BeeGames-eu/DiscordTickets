@@ -10,7 +10,7 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	name: 'stats',
-	description: 'View ticket stats.',
+	description: 'Ukáže statistiky',
 	usage: '',
 	aliases: ['data', 'statistics'],
 	
@@ -24,10 +24,10 @@ module.exports = {
 		message.channel.send(
 			new MessageEmbed()
 				.setColor(config.colour)
-				.setTitle(':bar_chart: Statistics')
-				.addField('Open tickets', open, true)
-				.addField('Closed tickets', closed, true)
-				.addField('Total tickets', open + closed, true)
+				.setTitle(':bar_chart: Statistika')
+				.addField('Otevřené tickety', open, true)
+				.addField('Uzavřené tickety', closed, true)
+				.addField('Celkem', open + closed, true)
 				.setFooter(guild.name, guild.iconURL())
 		);
 	}

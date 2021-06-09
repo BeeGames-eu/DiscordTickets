@@ -14,8 +14,8 @@ const exists = path => access(path).then(() => true, () => false);
 
 module.exports = {
 	name: 'tickets',
-	description: 'List your recent tickets to access transcripts / archives.',
-	usage: '[@member]',
+	description: 'Zobrazí vaše předchozí tickety, abyste mohli zobrazit jejich přepis/archiv.',
+	usage: '[@člen]',
 	aliases: ['list'],
 	args: false,
 	async execute(client, message, args, {config, Ticket}) {
@@ -26,8 +26,8 @@ module.exports = {
 			return message.channel.send(
 				new MessageEmbed()
 					.setColor(config.err_colour)
-					.setTitle('❌ **Error**')
-					.setDescription(`${config.name} has not been set up correctly. Could not find a 'support team' role with the id \`${config.staff_role}\``)
+					.setTitle('❌ **Chyba**')
+					.setDescription(`${config.name} nebyl nastaven správně. Nemohla být nalezena role týmu s ID \`${config.staff_role}\``)
 					.setFooter(guild.name, guild.iconURL())
 			);
 		}
@@ -41,10 +41,10 @@ module.exports = {
 					new MessageEmbed()
 						.setColor(config.err_colour)
 						.setAuthor(message.author.username, message.author.displayAvatarURL())
-						.setTitle('❌ **No permission**')
-						.setDescription('You don\'t have permission to list others\' tickets as you are not staff.')
-						.addField('Usage', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
-						.addField('Help', `Type \`${config.prefix}help ${this.name}\` for more information`)
+						.setTitle('❌ **Chybějící oprávnění**')
+						.setDescription(`Nemáš právo zobrazovat tickety ostatních, protože nejsi členem týmu.`)
+						.addField('Použití', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
+						.addField('Pomoc', `Napiš \`${config.prefix}help ${this.name}\` pro více informací`)
 						.setFooter(guild.name, guild.iconURL())
 				);
 			}
@@ -71,8 +71,8 @@ module.exports = {
 		let embed = new MessageEmbed()
 			.setColor(config.colour)
 			.setAuthor(user.username, user.displayAvatarURL())
-			.setTitle(`${context === 'self' ? 'Your' : user.username + '\'s'} tickets`)
-			.setFooter(guild.name + ' | This message will be deleted in 60 seconds', guild.iconURL());
+			.setTitle(context === "self" ? "Tvoje tickety" : `Tickety uživatele ${user.username}`)
+			.setFooter(guild.name + ' | Tato zpráva bude smazána za 60 sekund', guild.iconURL()); //This message will be deleted in 60 seconds
 
 		/* if (config.transcripts.web.enabled) {
 			embed.setDescription(`You can access all of your ticket archives on the [web portal](${config.transcripts.web.server}/${user.id}).`);
@@ -91,23 +91,23 @@ module.exports = {
 			let transcript = '';
 			let c = closedTickets.rows[t].channel;
 			if (config.transcripts.web.enabled || await exists(join(__dirname, `../../user/transcripts/text/${c}.txt`))) {
-				transcript = `\n> Type \`${config.prefix}transcript ${closedTickets.rows[t].id}\` to view.`;
+				transcript = `\n> Napiš \`${config.prefix}transcript ${closedTickets.rows[t].id}\` pro zobrazení.`;
 			}
 
 			closed.push(`> **#${closedTickets.rows[t].id}**: \`${desc}${desc.length > 20 ? '...' : ''}\`${transcript}`);
 
 		}
 
-		let pre = context === 'self' ? 'You have' : user.username + ' has';
-		embed.addField('Open tickets', openTickets.count === 0 ? `${pre} no open tickets.` : open.join('\n\n'), false);
-		embed.addField('Closed tickets', closedTickets.count === 0 ? `${pre} no old tickets` : closed.join('\n\n'), false);
+		let pre = context === 'self' ? 'Nemáš' : `Uživatel ${user.username} nemá`;
+		embed.addField('Otevřené tickety', openTickets.count === 0 ? `${pre} žádné otevřené tickety.` : open.join('\n\n'), false); // Open tickets // no open tickets
+		embed.addField('Zavřené tickety', closedTickets.count === 0 ? `${pre} žádné uzavřené tickety` : closed.join('\n\n'), false); //Closed tickets // no old tickets
 
 		message.delete({timeout: 15000});
 
 		let channel;
 		try {
 			channel = message.author.dmChannel || await message.author.createDM();
-			message.channel.send('Sent to DM').then(msg => msg.delete({timeout: 15000}));
+			message.channel.send('Posláno do soukromé zprávy.').then(msg => msg.delete({timeout: 15000}));
 		} catch (e) {
 			channel = message.channel;
 		}

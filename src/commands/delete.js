@@ -18,7 +18,7 @@ const exists = path => access(path).then(() => true, () => false);
 
 module.exports = {
 	name: 'delete',
-	description: 'Delete a ticket. Similar to closing a ticket, but does not save transcript or archives.',
+	description: 'Smaže ticket. Funkčně podobné zavření ticketu, ale neukládá přepis ani archivy.',
 	usage: '[ticket]',
 	aliases: ['del'],
 	example: 'delete #ticket-17',
@@ -32,10 +32,10 @@ module.exports = {
 		const notTicket = new MessageEmbed()
 			.setColor(config.err_colour)
 			.setAuthor(message.author.username, message.author.displayAvatarURL())
-			.setTitle('❌ **This isn\'t a ticket channel**')
-			.setDescription('Use this command in the ticket channel you want to delete, or mention the channel.')
-			.addField('Usage', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
-			.addField('Help', `Type \`${config.prefix}help ${this.name}\` for more information`)
+			.setTitle('❌ **Nejsi v kanálu s ticketem**')
+			.setDescription('Použij tento příkaz v kanálu ticketu, který chceš smazat, nebo jej zmiň.')
+			.addField('Použití', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
+			.addField('Pomoc', `Napiš \`${config.prefix}help ${this.name}\` pro více informací`)
 			.setFooter(guild.name, guild.iconURL());
 
 		let ticket;
@@ -60,8 +60,8 @@ module.exports = {
 			});
 			if (!ticket) {
 				notTicket
-					.setTitle('❌ **Channel is not a ticket**')
-					.setDescription(`${channel} is not a ticket channel.`);
+					.setTitle('❌ **Vybraný kanál není ticket**')
+					.setDescription(`${channel} není kanál s ticketem.`);
 				return message.channel.send(notTicket);
 			}
 
@@ -71,10 +71,10 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.err_colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle('❌ **No permission**')
-					.setDescription(`You don't have permission to delete ${channel} as it does not belong to you and you are not staff.`)
-					.addField('Usage', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
-					.addField('Help', `Type \`${config.prefix}help ${this.name}\` for more information`)
+					.setTitle('❌ **Chybějící oprávnění**')
+					.setDescription(`Nemáš právo smazat ${channel}, protože není tvůj a nejsi členem týmu.`)
+					.addField('Použití', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
+					.addField('Pomoc', `Napiš \`${config.prefix}help ${this.name}\` pro více informací`)
 					.setFooter(guild.name, guild.iconURL())
 			);
 		
@@ -84,12 +84,13 @@ module.exports = {
 			new MessageEmbed()
 				.setColor(config.colour)
 				.setAuthor(message.author.username, message.author.displayAvatarURL())
-				.setTitle('❔ Are you sure?')
+				.setTitle('❔ Opravdu chceš ticket smazat?')
 				.setDescription(
-					`:warning: This action is **irreversible**, the ticket will be completely removed from the database.
-					You will **not** be able to view a transcript/archive of the channel later.
-					Use the \`close\` command instead if you don't want this behaviour.\n**React with ✅ to confirm.**`)
-				.setFooter(guild.name + ' | Expires in 15 seconds', guild.iconURL())
+					`:warning: Tato akce **nelze vrátit** zpět, ticket bude kompletně smazán z databáze.
+					**Nebudeš** moci později zhlédnout přepis/archiv kanálu.
+					Pokud nechceš toto chování, použij místo tohoto příkazu příkaz \`close\`
+					**Zareaguj pomocí ✅ pro potvrzení.**`)
+				.setFooter(guild.name + ' | Vyprší za 15 sekund', guild.iconURL())
 		);
 
 		await confirm.react('✅');
@@ -105,8 +106,8 @@ module.exports = {
 					new MessageEmbed()
 						.setColor(config.colour)
 						.setAuthor(message.author.username, message.author.displayAvatarURL())
-						.setTitle('**Ticket deleted**')
-						.setDescription(`Ticket deleted by ${message.author}`)
+						.setTitle('✅ **Ticket smazán**')
+						.setDescription(`Ticket smazán uživatelem ${message.author}`)
 						.setFooter(guild.name, guild.iconURL())
 				);
 
@@ -115,8 +116,8 @@ module.exports = {
 				new MessageEmbed()
 					.setColor(config.colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setTitle(`✅ **Ticket ${ticket.id} deleted**`)
-					.setDescription('The channel will be automatically deleted in a few seconds.')
+					.setTitle(`✅ **Ticket ${ticket.id} smazán**`)
+					.setDescription('Tento kanál bude za chvíli automaticky smazán.')
 					.setFooter(guild.name, guild.iconURL())
 			);
 
@@ -147,9 +148,9 @@ module.exports = {
 					new MessageEmbed()
 						.setColor(config.colour)
 						.setAuthor(message.author.username, message.author.displayAvatarURL())
-						.setTitle('Ticket deleted')
-						.addField('Creator', `<@${ticket.creator}>`, true)
-						.addField('Deleted by', message.author, true)
+						.setTitle('Ticket smazán')
+						.addField('Autor', `<@${ticket.creator}>`, true)
+						.addField('Smazán uživatelem', message.author, true)
 						.setFooter(guild.name, guild.iconURL())
 						.setTimestamp()
 				);
@@ -164,8 +165,8 @@ module.exports = {
 					new MessageEmbed()
 						.setColor(config.err_colour)
 						.setAuthor(message.author.username, message.author.displayAvatarURL())
-						.setTitle('❌ **Expired**')
-						.setDescription('You took too long to react; confirmation failed.')
+						.setTitle('❌ **Čas vypršel**')
+						.setDescription('Trvalo ti moc dlouho zareagovat; operace byla zrušena.')
 						.setFooter(guild.name, guild.iconURL()));
 
 				message.delete({

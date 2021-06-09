@@ -11,6 +11,13 @@ const Logger = require('leekslazylogger');
 const log = new Logger();
 const archive = require('../modules/archive');
 
+const secondsFormatter = new Intl.NumberFormat("cs", {
+	style: "unit",
+	unit: "second",
+	unitDisplay: "long",
+	maximumFractionDigits: 1
+});
+
 module.exports = {
 	event: 'message',
 	async execute(client, [message], {config, Ticket, Setting}) {
@@ -19,9 +26,9 @@ module.exports = {
 
 		if (message.channel.type === 'dm' && !message.author.bot) {
 			log.console(`Received a DM from ${message.author.tag}: ${message.cleanContent}`);
-			return message.channel.send(`Hello there, ${message.author.username}!
-I am the support bot for **${guild}**.
-Type \`${config.prefix}new\` on the server to create a new ticket.`);
+			return message.channel.send(`Ahoj, ${message.author.username}!
+Jsem bot podpory na serveru **${guild}**.
+Napiš \`${config.prefix}new\` na serveru pro vytvoření ticketu.`);
 		} // stop here if is DM
 
 		/**
@@ -32,7 +39,7 @@ Type \`${config.prefix}new\` on the server to create a new ticket.`);
 		let ticket = await Ticket.findOne({ where: { channel: message.channel.id } });
 		if (ticket) archive.add(message); // add message to archive
 
-		if (message.author.bot || message.author.id === client.user.id) return; // goodbye bots
+		if (message.author.bot || message.author.id === client.user.id) return; // goodbye bots :(
 
 
 		/**
@@ -51,15 +58,15 @@ Type \`${config.prefix}new\` on the server to create a new ticket.`);
 
 		if (!command || commandName === 'none') return; // not an existing command
 
-		if (message.guild.id !== guild.id) return message.reply(`This bot can only be used within the "${guild}" server`); // not in this server
+		if (message.guild.id !== guild.id) return message.reply(`Tento bot může být použit jen na serveru "${guild}"`); // not in this server
 
 		if (command.permission && !message.member.hasPermission(command.permission)) {
 			log.console(`${message.author.tag} tried to use the '${command.name}' command without permission`);
 			return message.channel.send(
 				new MessageEmbed()
 					.setColor(config.err_colour)
-					.setTitle('❌ No permission')
-					.setDescription(`**You do not have permission to use the \`${command.name}\` command** (requires \`${command.permission}\`).`)
+					.setTitle('❌ **Chybějící oprávnění**')
+					.setDescription(`**Nemáš oprávnění na použití příkazu \`${command.name}\`** (vyžaduje oprávnění \`${command.permission}\`).`)
 					.setFooter(guild.name, guild.iconURL())
 			);
 		}
@@ -68,8 +75,8 @@ Type \`${config.prefix}new\` on the server to create a new ticket.`);
 			return message.channel.send(
 				new MessageEmbed()
 					.setColor(config.err_colour)
-					.addField('Usage', `\`${config.prefix}${command.name} ${command.usage}\`\n`)
-					.addField('Help', `Type \`${config.prefix}help ${command.name}\` for more information`)
+					.addField('Použití', `\`${config.prefix}${command.name} ${command.usage}\`\n`)
+					.addField('Pomoc', `Napiš \`${config.prefix}help ${command.name}\` pro více informací`)
 					.setFooter(guild.name, guild.iconURL())
 			);
 		}
@@ -86,10 +93,11 @@ Type \`${config.prefix}new\` on the server to create a new ticket.`);
 			if (now < expirationTime) {
 				const timeLeft = (expirationTime - now) / 1000;
 				log.console(`${message.author.tag} attempted to use the '${command.name}' command before the cooldown was over`);
+
 				return message.channel.send(
 					new MessageEmbed()
 						.setColor(config.err_colour)
-						.setDescription(`❌ Please wait ${timeLeft.toFixed(1)} second(s) before reusing the \`${command.name}\` command.`)
+						.setDescription(`❌ Prosím, vyčkej ${secondsFormatter.format(timeLeft)} před použitím \`${command.name}\`.`)
 						.setFooter(guild.name, guild.iconURL())
 				);
 			}
@@ -104,7 +112,7 @@ Type \`${config.prefix}new\` on the server to create a new ticket.`);
 		} catch (error) {
 			log.warn(`An error occurred whilst executing the '${command.name}' command`);
 			log.error(error);
-			message.channel.send(`❌ An error occurred whilst executing the \`${command.name}\` command.`);
+			message.channel.send(`❌ Nastala chyba při používání \`${command.name}\`.`);
 		}
 	}
 };
