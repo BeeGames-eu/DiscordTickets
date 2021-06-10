@@ -31,16 +31,8 @@ module.exports = {
 	name: 'BeeGames - Support',
 	presences: [
 		{
-			activity: '%snew',
+			activity: 'info@beegames.eu',
 			type: 'PLAYING'
-		},
-		{
-			activity: 'with tickets',
-			type: 'PLAYING'
-		},
-		{
-			activity: 'for new tickets',
-			type: 'WATCHING'
 		}
 	],
 	append_presence: ' | %shelp',
