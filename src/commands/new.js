@@ -33,6 +33,10 @@ module.exports = {
 			);
 
 
+		if (!message.member.roles.cache.has(config.staff_role)) {
+			return;
+		}
+
 		let tickets = await Ticket.findAndCountAll({
 			where: {
 				creator: message.author.id,
