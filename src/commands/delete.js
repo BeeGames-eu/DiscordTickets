@@ -66,13 +66,13 @@ module.exports = {
 			}
 
 		}
-		if (message.author.id !== ticket.creator && !message.member.roles.cache.has(config.staff_role)) 
+		if (!message.member.roles.cache.has(config.staff_role)) 
 			return channel.send(
 				new MessageEmbed()
 					.setColor(config.err_colour)
 					.setAuthor(message.author.username, message.author.displayAvatarURL())
 					.setTitle('❌ **Chybějící oprávnění**')
-					.setDescription(`Nemáš právo smazat ${channel}, protože není tvůj a nejsi členem týmu.`)
+					.setDescription(`Nemáš právo smazat ${channel}, protože nejsi členem týmu.`)
 					.addField('Použití', `\`${config.prefix}${this.name} ${this.usage}\`\n`)
 					.addField('Pomoc', `Napiš \`${config.prefix}help ${this.name}\` pro více informací`)
 					.setFooter(guild.name, guild.iconURL())
