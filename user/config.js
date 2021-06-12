@@ -36,7 +36,7 @@ module.exports = {
 		}
 	],
 	append_presence: ' | %shelp',
-	colour: '#009999',
+	colour: 0xe0c61f,
 	err_colour: 'RED',
 	cooldown: 3,
 
