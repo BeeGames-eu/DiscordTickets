@@ -42,7 +42,7 @@ module.exports = {
 					.setColor(config.colour)
 					.setDescription(
 						`\nPříkazy, ke kterým máš přístup, jsou vypsány níže. Napiš \`${config.prefix}help [příkaz]\` pro více informací o určitém příkazu.
-						\n${cmds.join('\n\n')}
+						\n${cmds.join('\n')}
 						\nProsím, kontaktuj člena týmu, pokud chceš s něčím pomoci.`
 					)
 					.setFooter(guild.name, guild.iconURL())
